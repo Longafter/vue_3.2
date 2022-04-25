@@ -4,7 +4,7 @@ const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 module.exports = {
   configureWebpack: config => {
-    // 按需导入 element-plus
+    // 按需导入 Element-Plus
     config.plugins.push(AutoImport({
       resolvers: [ElementPlusResolver()]
     }))
