@@ -1,18 +1,20 @@
 <template>
   <div class="login-container">
-    <el-form :model="form" ref="formRef" class="login-form">
+    <el-form :model="form" :rules="rules" ref="formRef" class="login-form">
       <div class="title-container">
         <h3 class="title">用户登录</h3>
       </div>
-      <el-form-item>
+      <el-form-item prop="username">
         <svg-icon icon="user" class="svg-container"></svg-icon>
         <el-input v-model="form.name" />
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="password">
         <svg-icon icon="password" class="svg-container"></svg-icon>
         <el-input v-model="form.password" />
       </el-form-item>
-      <el-button type="primary" class="login-button">登录</el-button>
+      <el-button type="primary" class="login-button" @click="handleLogin"
+        >登录</el-button
+      >
     </el-form>
   </div>
 </template>
@@ -21,9 +23,38 @@
 import { ref } from 'vue'
 
 const form = ref({
-  name: '',
+  username: '',
   password: ''
 })
+
+const rules = ref({
+  username: [
+    {
+      required: true,
+      message: 'Please input username',
+      trigger: 'blur'
+    }
+  ],
+  password: [
+    {
+      required: true,
+      message: 'Please input password',
+      trigger: 'blur'
+    }
+  ]
+})
+
+const formRef = ref(null)
+const handleLogin = () => {
+  formRef.value.validate((valid) => {
+    if (valid) {
+      alert('submit')
+    } else {
+      console.log('error submit')
+      return false
+    }
+  })
+}
 </script>
 
 <style lang="scss" scoped>
