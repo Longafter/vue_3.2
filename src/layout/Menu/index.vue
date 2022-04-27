@@ -7,6 +7,7 @@
     text-color="#fff"
     router
     unique-opened
+    :collapse="!$store.getters.siderType"
   >
     <el-sub-menu
       :index="item.id"
@@ -56,4 +57,4 @@ const saveCurPath = (path) => {
 }
 </script>
 
-<style lang='scss' scoped></style>
+<style lang="scss" scoped></style>
