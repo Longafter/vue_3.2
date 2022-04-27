@@ -29,7 +29,6 @@ const currentLanguage = computed(() => {
 })
 
 const handleCommand = (val) => {
-  console.log('val >>>', val)
   i18n.locale.value = val
   store.commit('app/changeLang', val)
   localStorage.setItem('lang', val)
