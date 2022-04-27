@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { diffTokenTime } from '@/utils/auth'
+import store from '@/store'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -9,6 +11,14 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
+    // 判断是否登录
+    if (localStorage.getItem('token')) {
+      // 判断 token 是否失效
+      if (diffTokenTime()) {
+        store.dispatch('app/logout')
+        return Promise.reject(new Error('token 失效了'))
+      }
+    }
     // 给所有请求都加上 token
     config.headers.Authorization = localStorage.getItem('token')
     return config
