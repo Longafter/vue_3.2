@@ -13,7 +13,10 @@ export default {
   },
   login: {
     title: 'user login',
-    btnTitle: 'login'
+    btnTitle: 'login',
+    logoutBtnTitle: 'logout',
+    usernameValidate: 'Please input username',
+    passwordValidate: 'Please input password'
   },
   dialog: {
     deleteTitle: 'Are you sure you want to delete the user '

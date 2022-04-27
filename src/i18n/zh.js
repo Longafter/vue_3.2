@@ -13,7 +13,10 @@ export default {
   },
   login: {
     title: '用户登录',
-    btnTitle: '登录'
+    btnTitle: '登录',
+    logoutBtnTitle: '退出',
+    usernameValidate: '请输入用户名',
+    passwordValidate: '请输入密码'
   },
   dialog: {
     deleteTitle: '确定要删除用户'

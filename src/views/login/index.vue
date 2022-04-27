@@ -27,6 +27,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import i18n from '@/i18n'
+const $t = i18n.global.t
 
 const store = useStore()
 
@@ -39,14 +41,14 @@ const rules = ref({
   username: [
     {
       required: true,
-      message: 'Please input username',
+      message: $t('login.usernameValidate'),
       trigger: 'blur'
     }
   ],
   password: [
     {
       required: true,
-      message: 'Please input password',
+      message: $t('login.passwordValidate'),
       trigger: 'blur'
     }
   ]
