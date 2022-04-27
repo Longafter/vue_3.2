@@ -4,14 +4,10 @@ import ZH from './zh'
 
 const messages = {
   en: {
-    msg: {
-      ...EN
-    }
+    ...EN
   },
   zh: {
-    msg: {
-      ...ZH
-    }
+    ...ZH
   }
 }
 
