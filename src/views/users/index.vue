@@ -17,13 +17,18 @@
       }}</el-button>
     </el-row>
     <!-- users数据 -->
-    <el-table :data="tableData" stripe style="width: 100%">
+    <el-table
+      :data="tableData"
+      stripe
+      :max-height="calcTableHeight"
+      style="width: 100%"
+    >
       <el-table-column
+        v-for="item in options"
+        :key="item.id"
         :prop="item.prop"
         :label="$t(`table.${item.label}`)"
         :width="item.width"
-        v-for="item in options"
-        :key="item.id"
       >
         <template v-slot="{ row }" v-if="item.prop === 'mg_state'">
           <el-switch v-model="row.mg_state" @change="changeState(row)" />
@@ -38,12 +43,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 弹窗 -->
-    <Dialog
-      v-model="dialogVisible"
-      :dialogTitle="dialogTitle"
-      v-if="dialogVisible"
-    />
     <!-- 分页器 -->
     <el-pagination
       v-model:currentPage="queryForm.pagenum"
@@ -55,12 +54,18 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+    <!-- 弹窗 -->
+    <Dialog
+      v-if="dialogVisible"
+      v-model="dialogVisible"
+      :dialogTitle="dialogTitle"
+    />
   </el-card>
 </template>
 
 <script setup>
 import { Search, Plus, Edit, Setting, Delete } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { getUser, changeUserState } from '@/api/users'
 import { options } from './options'
 import { ElMessage } from 'element-plus'
@@ -78,6 +83,16 @@ const tableData = ref([])
 const total = ref(0)
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
+const tableHeight = ref(0)
+
+const calcTableHeight = () => {
+  tableHeight.value = window.innerHeight - 500
+}
+onMounted(() => {
+  nextTick(() => {
+    calcTableHeight()
+  })
+})
 
 // 初始化用户列表
 const initGetUserList = async () => {
@@ -110,8 +125,16 @@ const handleCurrentChange = (pageNum) => {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  padding-bottom: 16px;
-  box-sizing: border-box;
+.el-card {
+  height: 100%;
+  .header {
+    padding-bottom: 16px;
+    box-sizing: border-box;
+  }
+}
+.el-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
