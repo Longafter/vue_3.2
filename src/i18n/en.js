@@ -34,7 +34,7 @@ export default {
     placeholder: 'Please enter a user name to search for'
   },
   message: {
-    updeteSuccess: 'update successfully'
+    updateSuccess: 'update successfully'
   },
   driver: {
     doneBtnText: 'done',
