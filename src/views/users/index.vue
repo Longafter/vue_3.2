@@ -12,7 +12,7 @@
       <el-button type="primary" :icon="Search" @click="initGetUserList">{{
         $t('table.search')
       }}</el-button>
-      <el-button type="primary" :icon="Plus">{{
+      <el-button type="primary" :icon="Plus" @click="handleDialogValue">{{
         $t('table.adduser')
       }}</el-button>
     </el-row>
@@ -38,6 +38,12 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 弹窗 -->
+    <Dialog
+      v-model="dialogVisible"
+      :dialogTitle="dialogTitle"
+      v-if="dialogVisible"
+    />
     <!-- 分页器 -->
     <el-pagination
       v-model:currentPage="queryForm.pagenum"
@@ -59,6 +65,7 @@ import { getUser, changeUserState } from '@/api/users'
 import { options } from './options'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
+import Dialog from './components/dialog.vue'
 
 const i18n = useI18n()
 
@@ -67,9 +74,10 @@ const queryForm = ref({
   pagenum: 1,
   pagesize: 10
 })
-
 const tableData = ref([])
 const total = ref(0)
+const dialogVisible = ref(false)
+const dialogTitle = ref('')
 
 // 初始化用户列表
 const initGetUserList = async () => {
@@ -83,6 +91,12 @@ initGetUserList()
 const changeState = async (info) => {
   await changeUserState(info.id, info.mg_state)
   ElMessage.success(i18n.t('message.updateSuccess'))
+}
+
+// 弹窗显示隐藏
+const handleDialogValue = () => {
+  dialogTitle.value = '添加用户'
+  dialogVisible.value = true
 }
 
 const handleSizeChange = (pageSize) => {

@@ -34,7 +34,8 @@ export default {
     placeholder: '请输入搜索的用户姓名'
   },
   message: {
-    updateSuccess: '更新成功'
+    updateSuccess: '更新成功',
+    addSuccess: '添加成功'
   },
   driver: {
     doneBtnText: '完成',
