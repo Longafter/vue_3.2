@@ -27,9 +27,9 @@
           <el-switch v-model="row.mg_state">samll</el-switch>
         </template>
         <template #default v-else-if="item.prop === 'action'">
-          <el-button type="primary" size="small">samll</el-button>
-          <el-button type="warning" size="small">samll</el-button>
-          <el-button type="danger" size="small">samll</el-button>
+          <el-button type="primary" size="small" :icon="Edit"></el-button>
+          <el-button type="warning" size="small" :icon="Setting"></el-button>
+          <el-button type="danger" size="small" :icon="Delete"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { Search, Plus } from '@element-plus/icons-vue'
+import { Search, Plus, Edit, Setting, Delete } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { getUser } from '@/api/users'
 import { options } from './options'

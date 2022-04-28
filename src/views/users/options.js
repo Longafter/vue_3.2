@@ -6,7 +6,7 @@ export const options = [
   {
     label: 'email',
     prop: 'email',
-    width: 210
+    width: 200
   },
   {
     label: 'mobile',
@@ -27,6 +27,6 @@ export const options = [
   {
     label: 'action',
     prop: 'action',
-    width: 260
+    width: 200
   }
 ]
