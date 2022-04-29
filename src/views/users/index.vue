@@ -12,15 +12,16 @@
       <el-button type="primary" :icon="Search" @click="initGetUserList">{{
         $t('table.search')
       }}</el-button>
-      <el-button type="primary" :icon="Plus" @click="handleDialogValue">{{
+      <el-button type="primary" :icon="Plus" @click="handleDialogValue()">{{
         $t('table.adduser')
       }}</el-button>
     </el-row>
     <!-- users数据 -->
     <el-table
+      ref="tableRef"
       :data="tableData"
       stripe
-      :max-height="calcTableHeight"
+      :height="tableHeight"
       style="width: 100%"
     >
       <el-table-column
@@ -36,8 +37,13 @@
         <template v-slot="{ row }" v-else-if="item.prop === 'create_time'">
           {{ $filters.filterTimes(row.create_time) }}
         </template>
-        <template #default v-else-if="item.prop === 'action'">
-          <el-button type="primary" size="small" :icon="Edit"></el-button>
+        <template #default="{ row }" v-else-if="item.prop === 'action'">
+          <el-button
+            type="primary"
+            size="small"
+            :icon="Edit"
+            @click="handleDialogValue(row)"
+          ></el-button>
           <el-button type="warning" size="small" :icon="Setting"></el-button>
           <el-button type="danger" size="small" :icon="Delete"></el-button>
         </template>
@@ -48,9 +54,11 @@
       v-model:currentPage="queryForm.pagenum"
       v-model:page-size="queryForm.pagesize"
       background
+      samll
       :page-sizes="[2, 5, 10, 15]"
-      layout="total, sizes, prev, pager, next, jumper"
+      layout="prev, pager, next"
       :total="total"
+      :hide-on-single-page="paginationHide"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -59,18 +67,21 @@
       v-if="dialogVisible"
       v-model="dialogVisible"
       :dialogTitle="dialogTitle"
+      :dialogTableValue="dialogTableValue"
+      @initUserList="initGetUserList"
     />
   </el-card>
 </template>
 
 <script setup>
 import { Search, Plus, Edit, Setting, Delete } from '@element-plus/icons-vue'
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { getUser, changeUserState } from '@/api/users'
 import { options } from './options'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import Dialog from './components/dialog.vue'
+import { isNull } from '@/utils/filters'
 
 const i18n = useI18n()
 
@@ -83,15 +94,10 @@ const tableData = ref([])
 const total = ref(0)
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
-const tableHeight = ref(0)
-
-const calcTableHeight = () => {
-  tableHeight.value = window.innerHeight - 500
-}
-onMounted(() => {
-  nextTick(() => {
-    calcTableHeight()
-  })
+const dialogTableValue = ref({})
+const tableHeight = ref(500)
+const paginationHide = computed(() => {
+  return total.value - queryForm.value.pagenum * queryForm.value.pagesize < 0
 })
 
 // 初始化用户列表
@@ -109,8 +115,14 @@ const changeState = async (info) => {
 }
 
 // 弹窗显示隐藏
-const handleDialogValue = () => {
-  dialogTitle.value = '添加用户'
+const handleDialogValue = (row) => {
+  if (isNull(row)) {
+    dialogTitle.value = '添加用户'
+    dialogTableValue.value = {}
+  } else {
+    dialogTitle.value = '编辑用户'
+    dialogTableValue.value = JSON.parse(JSON.stringify(row))
+  }
   dialogVisible.value = true
 }
 
@@ -127,14 +139,21 @@ const handleCurrentChange = (pageNum) => {
 <style lang="scss" scoped>
 .el-card {
   height: 100%;
-  .header {
-    padding-bottom: 16px;
-    box-sizing: border-box;
+  position: relative;
+  .el-card__body {
+    // height: 100%;
+    .header {
+      padding-bottom: 16px;
+      box-sizing: border-box;
+    }
+    .el-pagination {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      bottom: 10px;
+    }
   }
-}
-.el-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

@@ -9,7 +9,11 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" />
       </el-form-item>
-      <el-form-item label="密码" prop="password">
+      <el-form-item
+        label="密码"
+        prop="password"
+        v-if="dialogTitle === '添加用户'"
+      >
         <el-input v-model="form.password" type="password" />
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
@@ -29,16 +33,20 @@
 </template>
 
 <script setup>
-import { defineEmits, ref, defineProps } from 'vue'
-import { addUser } from '@/api/users'
+import { defineEmits, ref, defineProps, watch } from 'vue'
+import { addUser, editUser } from '@/api/users'
 import i18n from '@/i18n'
 import { ElMessage } from 'element-plus/lib/components'
 
-defineProps({
+const props = defineProps({
   dialogTitle: {
     type: String,
     default: '',
     required: true
+  },
+  dialogTableValue: {
+    type: Object,
+    default: () => {}
   }
 })
 
@@ -86,14 +94,33 @@ const rules = ref({
   ]
 })
 
-const emits = defineEmits(['update:modelValue'])
+watch(
+  () => props.dialogTableValue,
+  () => {
+    console.log(props.dialogTableValue)
+    form.value = props.dialogTableValue
+  },
+  { deep: true, immediate: true }
+)
+
+const emits = defineEmits(['update:modelValue', 'initUserList'])
 const handleClose = () => {
   emits('update:modelValue', false)
 }
-const handleConfirm = async () => {
-  await addUser(form.value)
-  ElMessage.success(i18n.global.t('message.addSuccess'))
-  handleClose()
+const handleConfirm = () => {
+  formRef.value.validate(async (valid) => {
+    if (valid) {
+      props.dialogTitle === '添加用户'
+        ? await addUser(form.value)
+        : await editUser(form.value)
+      ElMessage.success(i18n.global.t('message.addSuccess'))
+      emits('initUserList')
+      handleClose()
+    } else {
+      console.log('error submit!!')
+      return false
+    }
+  })
 }
 </script>
 
